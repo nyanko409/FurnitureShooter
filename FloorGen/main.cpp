@@ -1,14 +1,5 @@
-/*=======================================================================
-
-  windowsの表示[main.cpp]
-			 Author : Ato
-			 Date   : 2018/4/22
--------------------------------------------------------------------------
-
-========================================================================*/
-#include<Windows.h>
-#include<d3d9.h>		//DirectXの奴を選ぶ
-#include<d3dx9.h>		//この二つは最低限必要
+#include <Windows.h>
+#include <d3dx9.h>
 #include <thread>
 #include <time.h>
 #include <vector>
@@ -24,7 +15,7 @@
 #pragma comment(lib, "dinput8.lib")
 
 #define CLASS_NAME      "GameWindow"
-#define WINDOW_CAPTION  "MACHINATH"
+#define WINDOW_CAPTION  "家具シューター"
 
 
 /*-----------------------------------------------------------------------
