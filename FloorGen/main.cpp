@@ -5,6 +5,8 @@
 #include <vector>
 #include "common.h"
 #include "mydirect3d.h"
+#include "input.h"
+#include "camera.h"
 #include "floorgenerator.h"
 
 
@@ -24,16 +26,16 @@
 LRESULT CALLBACK WndProc(HWND g_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 //ゲーム関係初期化関数
-static bool Initialize(void);
+static bool Initialize();
 
 //ゲーム更新関数
-static void Update(void);
+static void Update();
 
 //ゲーム描画関数
-static void Draw(void);
+static void Draw();
 
 //ゲーム終了の関数
-static void Finalize(void);
+static void Finalize();
 
 void InitRenderState();
 
@@ -114,6 +116,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		return -1;
 	}
 
+	Keyboard_Initialize(hInstance, g_hWnd);
+
 	MSG msg = {};
 
 	while (WM_QUIT != msg.message)
@@ -126,7 +130,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		else
 		{
 			// update and draw every frame
-			Sleep(10);
+			Sleep(7);
+			Keyboard_Update();
+
 			Update();
 			Draw();
 		}
@@ -162,13 +168,13 @@ LRESULT CALLBACK WndProc(HWND g_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 //ゲーム更新関数
-void Update(void)
+void Update()
 {
-	
+	UpdateCamera();
 }
 
 //ゲームの描画処理
-void Draw(void)
+void Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = MyDirect3D_GetDevice();
 
@@ -186,10 +192,30 @@ void Draw(void)
 	pDevice->Present(NULL, NULL, NULL, NULL);
 }
 
+// ゲームの初期化
+bool Initialize()
+{
+	//Direct3Dインターフェイス作成
+	if (!MyDirect3D_Initialize(g_hWnd))
+	{
+		return false;
+	}
+
+	InitRenderState();
+
+	InitCamera();
+	InitPlane();
+
+	return true;
+}
+
 //終了処理
-void Finalize(void)
+void Finalize()
 {
 	UninitPlane();
+	UninitCamera();
+	Keyboard_Finalize();
+
 	MyDirect3D_Finalize();
 }
 
@@ -225,20 +251,4 @@ void InitRenderState()
 	device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
 	device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 	device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
-}
-
-// ゲームの初期化
-bool Initialize(void)
-{
-	//Direct3Dインターフェイス作成
-	if (!MyDirect3D_Initialize(g_hWnd))
-	{
-		return false;
-	}
-
-	InitRenderState();
-
-	InitPlane();
-
-	return true;
 }

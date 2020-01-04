@@ -126,22 +126,6 @@ void DrawPlane()
 {
 	auto pDevice = MyDirect3D_GetDevice();
 
-	// set the view transform
-	D3DXMATRIX matView;
-	D3DXMatrixLookAtLH(&matView,
-		&D3DXVECTOR3(0.0f, 8.0f, 0.001f),				// pos
-		&D3DXVECTOR3(0.0f, 0.0f, 0.0f),					// lookat
-		&D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-	pDevice->SetTransform(D3DTS_VIEW, &matView);
-
-	// set the projection transform
-	D3DXMATRIX matProjection;
-	D3DXMatrixPerspectiveFovLH(&matProjection,
-		D3DXToRadian(90),
-		(FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 300.0f);
-	pDevice->SetTransform(D3DTS_PROJECTION, &matProjection);
-
-
 	// select the vertex and index buffer to display
 	pDevice->SetFVF(CUSTOM_FVF);
 	pDevice->SetStreamSource(0, plane->data->vBuffer, 0, sizeof(CUSTOM_VERTEX));
