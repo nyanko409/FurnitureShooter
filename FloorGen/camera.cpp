@@ -52,7 +52,7 @@ void UpdateCamera()
 	// switch to game screen when key is pressed
 	if (Keyboard_IsPress(DIK_L))
 	{
-		SetScene(SCENE_TITLESCREEN);
+		SetScene(SCENE_RESULTSCREEN);
 	}
 
 	// move camera with WASD and mouse for debug purposes

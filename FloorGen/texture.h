@@ -13,6 +13,7 @@
 typedef enum TextureIndex
 {
 	TEXTURE_INDEX_GROUND,
+	TEXTURE_INDEX_RESULT,
 
     TEXTURE_INDEX_MAX
 };

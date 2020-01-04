@@ -18,6 +18,7 @@ typedef struct TextureFile_tag
 // texture path
 static const TextureFile g_TextureFiles[] = {
 	{"asset/texture/sand.jpg",		1024, 1024},
+	{"asset/texture/title.dds",		1920, 1080},
 };
 
 // texture file count

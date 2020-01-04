@@ -4,7 +4,8 @@
 enum SceneType
 {
 	SCENE_TITLESCREEN,
-	SCENE_GAMESCREEN
+	SCENE_GAMESCREEN,
+	SCENE_RESULTSCREEN
 };
 
 // call once at start

@@ -127,6 +127,7 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mydirect3d.cpp" />
+    <ClCompile Include="result.cpp" />
     <ClCompile Include="sceneManagement.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -139,6 +140,7 @@
     <ClInclude Include="floorgenerator.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="mydirect3d.h" />
+    <ClInclude Include="result.h" />
     <ClInclude Include="sceneManagement.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />

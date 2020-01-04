@@ -1,8 +1,6 @@
 #include <Windows.h>
 #include <d3dx9.h>
-#include <thread>
 #include <time.h>
-#include <vector>
 #include "common.h"
 #include "mydirect3d.h"
 #include "texture.h"
@@ -10,6 +8,7 @@
 #include "sprite.h"
 #include "sceneManagement.h"
 #include "Title.h"
+#include "result.h"
 #include "camera.h"
 #include "floorgenerator.h"
 
@@ -45,6 +44,11 @@ static bool InitGame();
 static void UpdateGame();
 static void DrawGame();
 static void FinalizeGame();
+
+static bool InitResult();
+static void UpdateResult();
+static void DrawResult();
+static void FinalizeResult();
 
 
 /*-----------------------------------------------------------------------
@@ -123,6 +127,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	MSG msg = {};
 	bool init_title = false;
+	bool init_result = false;
 	bool init_game = false;
 
 	while (WM_QUIT != msg.message)
@@ -144,9 +149,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				// free memory used in game and init title screen
 				if (!init_title)
 				{
-					FinalizeGame();
+					FinalizeResult();
 					InitTitle();
-					init_game = false;
+					init_result = false;
 					init_title = true;
 				}
 
@@ -166,6 +171,20 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 				UpdateGame();
 				DrawGame();
+				break;
+
+			case SCENE_RESULTSCREEN:
+				// free memory used in title and init title screen
+				if (!init_result)
+				{
+					FinalizeGame();
+					InitResult();
+					init_game = false;
+					init_result = true;
+				}
+
+				UpdateResult();
+				DrawResult();
 				break;
 
 			default:
@@ -307,6 +326,47 @@ void DrawGame()
 
 	// draw sprites
 	SpriteStart();
+
+	// end draw
+	SpriteEnd();
+	pDevice->EndScene();
+
+	// draw to screen
+	pDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+
+bool InitResult()
+{
+	InitResultScreen();
+
+	return true;
+}
+
+void FinalizeResult()
+{
+	FinalizeResultScreen();
+}
+
+void UpdateResult()
+{
+	UpdateResultScreen();
+}
+
+void DrawResult()
+{
+	LPDIRECT3DDEVICE9 pDevice = MyDirect3D_GetDevice();
+
+	//バックバッファーのクリア 紫色は230，0，255，255
+	pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0F, 0);
+
+	// draw 3d meshes
+	pDevice->BeginScene();
+
+	// draw sprites
+	SpriteStart();
+
+	DrawResultScreen();
 
 	// end draw
 	SpriteEnd();
