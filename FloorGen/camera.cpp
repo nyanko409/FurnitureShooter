@@ -7,7 +7,7 @@
 
 
 // globals
-POINT g_lastPos; POINT g_curPos;
+POINT g_curPos, g_fixedPos = {500, 500};
 Camera* g_pCam;
 
 // function def
@@ -23,8 +23,7 @@ void InitCamera()
 	g_pCam = new Camera(D3DXVECTOR3(0, 0, -10), D3DXVECTOR3(0, 0, 1));
 
 	// init cursor pos
-	GetCursorPos(&g_curPos);
-	g_lastPos = g_curPos;
+	g_curPos = g_fixedPos;
 }
 
 void SetCameraPos(D3DXVECTOR3 lookAt, D3DXVECTOR3 position, int rotX, int rotY, int rotZ)
@@ -60,6 +59,7 @@ void UpdateCamera()
 
 	// init matrix and get device
 	auto device = MyDirect3D_GetDevice();
+	device->SetCursorPosition(100, 100, D3DCURSOR_IMMEDIATE_UPDATE);
 	D3DXMATRIX matView, matProjection;
 
 	// set view
@@ -79,11 +79,14 @@ void UninitCamera()
 void CameraInput()
 { 
 	// camera mouse look
-	g_lastPos = g_curPos;
-	
 	GetCursorPos(&g_curPos);
-	POINT diffPoint = g_curPos - g_lastPos;
+	POINT diffPoint = g_curPos - g_fixedPos;
+
 	g_pCam->Rotate(diffPoint.x, diffPoint.y);
+
+	// set cursor back to a fixed point
+	SetCursorPos(g_fixedPos.x, g_fixedPos.y);
+	g_curPos = g_fixedPos;
 
 	// camera movement
 	if (Keyboard_IsPress(DIK_W))
