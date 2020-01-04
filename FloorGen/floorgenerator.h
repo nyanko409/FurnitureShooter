@@ -17,7 +17,8 @@ struct PlaneData
 class Plane
 {
 public:
-	PlaneData* data;	// holds vertex data for the plane
+	PlaneData* data;				// holds vertex data for the plane
+	LPDIRECT3DTEXTURE9 texuture;	// pointer to the texture to display
 
 	// constructor for creating new plane
 	Plane(int zCount, int xCount, float xLength, float zLength);

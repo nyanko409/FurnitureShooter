@@ -127,7 +127,11 @@
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mydirect3d.cpp" />
+    <ClCompile Include="sceneManagement.cpp" />
+    <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="transformation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.h" />
@@ -135,7 +139,11 @@
     <ClInclude Include="floorgenerator.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="mydirect3d.h" />
+    <ClInclude Include="sceneManagement.h" />
+    <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
+    <ClInclude Include="Title.h" />
+    <ClInclude Include="transformation.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -119,6 +119,7 @@ Plane* plane2;
 void InitPlane()
 {
 	plane = new Plane(10, 10, 5, 5);
+	plane->texuture = Texture_GetTexture(TEXTURE_INDEX_GROUND);
 	plane2 = new Plane(2,6,1,1);
 }
 
@@ -143,7 +144,7 @@ void DrawPlane()
 	pDevice->SetTransform(D3DTS_WORLD, &identity);
 
 	// draw
-	pDevice->SetTexture(0, Texture_GetTexture(TEXTURE_INDEX_WATER));
+	pDevice->SetTexture(0, plane->texuture);
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 
 		plane->data->vertCount, 0, plane->data->indexCount - 2);
 }

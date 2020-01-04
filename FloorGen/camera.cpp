@@ -2,6 +2,7 @@
 #include "common.h"
 #include "mydirect3d.h"
 #include "input.h"
+#include "sceneManagement.h"
 
 
 
@@ -48,6 +49,12 @@ void SetCameraPos(D3DXVECTOR3 lookAt, D3DXVECTOR3 position, int rotX, int rotY, 
 
 void UpdateCamera()
 {
+	// switch to game screen when key is pressed
+	if (Keyboard_IsPress(DIK_L))
+	{
+		SetScene(SCENE_TITLESCREEN);
+	}
+
 	// move camera with WASD and mouse for debug purposes
 	CameraInput();
 

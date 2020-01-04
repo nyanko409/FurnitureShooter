@@ -7,6 +7,9 @@
 #include "mydirect3d.h"
 #include "texture.h"
 #include "input.h"
+#include "sprite.h"
+#include "sceneManagement.h"
+#include "Title.h"
 #include "camera.h"
 #include "floorgenerator.h"
 
@@ -20,29 +23,28 @@
 #define CLASS_NAME      "GameWindow"
 #define WINDOW_CAPTION  "家具シューター"
 
+// window
+static HWND g_hWnd;
 
 /*-----------------------------------------------------------------------
    プロトタイプ宣言
 ------------------------------------------------------------------------*/
 LRESULT CALLBACK WndProc(HWND g_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-//ゲーム関係初期化関数
-static bool Initialize();
-
-//ゲーム更新関数
-static void Update();
-
-//ゲーム描画関数
-static void Draw();
-
-//ゲーム終了の関数
-static void Finalize();
-
 void InitRenderState();
 
-// window
-static HWND g_hWnd;
+static bool InitLibrary();
+static void FinalizeLibrary();
 
+static bool InitTitle();
+static void UpdateTitle();
+static void DrawTitle();
+static void FinalizeTitle();
+
+static bool InitGame();
+static void UpdateGame();
+static void DrawGame();
+static void FinalizeGame();
 
 
 /*-----------------------------------------------------------------------
@@ -111,7 +113,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	UpdateWindow(g_hWnd);
 
 	// init
-	if (!Initialize())
+	if (!InitLibrary())
 	{
 		//初期化失敗
 		return -1;
@@ -120,6 +122,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	Keyboard_Initialize(hInstance, g_hWnd);
 
 	MSG msg = {};
+	bool init_title = false;
+	bool init_game = false;
 
 	while (WM_QUIT != msg.message)
 	{
@@ -134,13 +138,46 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			Sleep(7);
 			Keyboard_Update();
 
-			Update();
-			Draw();
+			switch (GetScene())
+			{
+			case SCENE_TITLESCREEN:
+				// free memory used in game and init title screen
+				if (!init_title)
+				{
+					FinalizeGame();
+					InitTitle();
+					init_game = false;
+					init_title = true;
+				}
+
+				UpdateTitle();
+				DrawTitle();
+				break;
+
+			case SCENE_GAMESCREEN:
+				// free memory used in title and init title screen
+				if (!init_game)
+				{
+					FinalizeTitle();
+					InitGame();
+					init_title = false;
+					init_game = true;
+				}
+
+				UpdateGame();
+				DrawGame();
+				break;
+
+			default:
+				break;
+			}
 		}
 	}
 
 	//ゲームの終了処理
-	Finalize();
+	FinalizeTitle();
+	FinalizeGame();
+	FinalizeLibrary();
 	return (int)msg.wParam;
 }
 
@@ -168,14 +205,95 @@ LRESULT CALLBACK WndProc(HWND g_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	return DefWindowProc(g_hWnd, uMsg, wParam, lParam);
 }
 
-//ゲーム更新関数
-void Update()
+
+bool InitLibrary()
+{
+	//Direct3Dインターフェイス作成
+	if (!MyDirect3D_Initialize(g_hWnd))
+	{
+		return false;
+	}
+
+	InitRenderState();
+
+	Texture_Load();
+	InitSprite();
+	InitScene();
+
+	return true;
+}
+
+void FinalizeLibrary()
+{
+	Keyboard_Finalize();
+	UninitSprite();
+	Texture_Release();
+
+	MyDirect3D_Finalize();
+}
+
+
+bool InitTitle()
+{
+	InitTitleScreen();
+
+	return true;
+}
+
+void FinalizeTitle()
+{
+	FinalizeTitleScreen();
+}
+
+void UpdateTitle()
+{
+	UpdateTitleScreen();
+}
+
+void DrawTitle()
+{
+	LPDIRECT3DDEVICE9 pDevice = MyDirect3D_GetDevice();
+
+	//バックバッファーのクリア 紫色は230，0，255，255
+	pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0F, 0);
+
+	// draw 3d meshes
+	pDevice->BeginScene();
+
+	// draw sprites
+	SpriteStart();
+
+	DrawTitleScreen();
+
+	// end draw
+	SpriteEnd();
+	pDevice->EndScene();
+
+	// draw to screen
+	pDevice->Present(NULL, NULL, NULL, NULL);
+}
+
+
+bool InitGame()
+{
+	InitCamera();
+	InitPlane();
+
+	return true;
+}
+
+void FinalizeGame()
+{
+	UninitPlane();
+	UninitCamera();
+}
+
+void UpdateGame()
 {
 	UpdateCamera();
 }
 
-//ゲームの描画処理
-void Draw()
+void DrawGame()
 {
 	LPDIRECT3DDEVICE9 pDevice = MyDirect3D_GetDevice();
 
@@ -187,40 +305,17 @@ void Draw()
 
 	DrawPlane();
 
+	// draw sprites
+	SpriteStart();
+
+	// end draw
+	SpriteEnd();
 	pDevice->EndScene();
 
 	// draw to screen
 	pDevice->Present(NULL, NULL, NULL, NULL);
 }
 
-// ゲームの初期化
-bool Initialize()
-{
-	//Direct3Dインターフェイス作成
-	if (!MyDirect3D_Initialize(g_hWnd))
-	{
-		return false;
-	}
-
-	InitRenderState();
-
-	Texture_Load();
-	InitCamera();
-	InitPlane();
-
-	return true;
-}
-
-//終了処理
-void Finalize()
-{
-	UninitPlane();
-	UninitCamera();
-	Keyboard_Finalize();
-	Texture_Release();
-
-	MyDirect3D_Finalize();
-}
 
 // init render state
 void InitRenderState()
