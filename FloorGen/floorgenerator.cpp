@@ -39,16 +39,22 @@ void Plane::CreatePlane(int x, int z, float xLength, float zLength)
 	data->vert = new CUSTOM_VERTEX[data->vertCount];
 
 	int curIndex = 0;
+	float curU = 0, u = 1.0F / x;
+	float curV = 0, v = 1.0F / z;
 	int curRow = 0, curColumn = 0;
 	for (int i = 0; i <= z; i++)
 	{
 		for (int j = 0; j <= x; j++)
 		{
-			data->vert[curIndex] = { startX + curColumn * xLength, 0, startZ - curRow * zLength, D3DVECTOR{0, 1, 0}, D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(0, 0) };
+			data->vert[curIndex] = { startX + curColumn * xLength, 0, startZ - curRow * zLength, D3DVECTOR{0, 1, 0}, D3DCOLOR_RGBA(255, 255, 255, 255), D3DXVECTOR2(curV, curU) };
+			
+			curU += u;
 			curColumn++;
 			curIndex++;
 		}
 
+		curV += v;
+		curU = 0;
 		curColumn = 0;
 		curRow++;
 	}
@@ -112,7 +118,7 @@ Plane* plane2;
 
 void InitPlane()
 {
-	plane = new Plane(2, 6, 1.0F, 1.0F);
+	plane = new Plane(10, 10, 5, 5);
 	plane2 = new Plane(2,6,1,1);
 }
 
@@ -137,6 +143,7 @@ void DrawPlane()
 	pDevice->SetTransform(D3DTS_WORLD, &identity);
 
 	// draw
+	pDevice->SetTexture(0, Texture_GetTexture(TEXTURE_INDEX_WATER));
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 
 		plane->data->vertCount, 0, plane->data->indexCount - 2);
 }

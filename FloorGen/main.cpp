@@ -5,6 +5,7 @@
 #include <vector>
 #include "common.h"
 #include "mydirect3d.h"
+#include "texture.h"
 #include "input.h"
 #include "camera.h"
 #include "floorgenerator.h"
@@ -203,6 +204,7 @@ bool Initialize()
 
 	InitRenderState();
 
+	Texture_Load();
 	InitCamera();
 	InitPlane();
 
@@ -215,6 +217,7 @@ void Finalize()
 	UninitPlane();
 	UninitCamera();
 	Keyboard_Finalize();
+	Texture_Release();
 
 	MyDirect3D_Finalize();
 }
@@ -247,8 +250,8 @@ void InitRenderState()
 	device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
 
 	// set texture sampling
-	device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 8);
-	device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
-	device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
-	device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	//device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 8);
+	//device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC);
+	//device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+	//device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 }
