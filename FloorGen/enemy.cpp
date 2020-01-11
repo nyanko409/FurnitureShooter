@@ -33,7 +33,7 @@ void UninitEnemy()
 
 void UpdateEnemy()
 {
-
+	RaycastFromMousePos();
 }
 
 void DrawEnemy()

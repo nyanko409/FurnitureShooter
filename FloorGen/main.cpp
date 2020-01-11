@@ -207,9 +207,10 @@ LRESULT CALLBACK WndProc(HWND g_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) {
-			ShowCursor(true);
-			SendMessage(g_hWnd, WM_CLOSE, 0, 0);
-			ShowCursor(false);
+			std::exit(0);
+			//ShowCursor(true);
+			//SendMessage(g_hWnd, WM_CLOSE, 0, 0);
+			//ShowCursor(false);
 		}
 		break;
 

@@ -8,7 +8,7 @@
 
 // globals
 Camera* g_pCam;
-POINT g_curPos, g_fixedPos = {500, 500};
+POINT g_curPos, g_fixedPos = {SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2};
 
 // function def
 void CameraInput();
