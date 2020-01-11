@@ -123,9 +123,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="floorgenerator.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="meshLoader.cpp" />
     <ClCompile Include="mydirect3d.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="sceneManagement.cpp" />
@@ -137,8 +139,10 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="floorgenerator.h" />
     <ClInclude Include="input.h" />
+    <ClInclude Include="meshLoader.h" />
     <ClInclude Include="mydirect3d.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="sceneManagement.h" />

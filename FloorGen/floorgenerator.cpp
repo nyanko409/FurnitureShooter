@@ -113,20 +113,18 @@ void Plane::CreatePlane(int x, int z, float xLength, float zLength)
 
 // floor
 Plane* plane;
-Plane* plane2;
 
 
 void InitPlane()
 {
 	plane = new Plane(10, 10, 5, 5);
 	plane->texuture = Texture_GetTexture(TEXTURE_INDEX_GROUND);
-	plane2 = new Plane(2,6,1,1);
 }
 
 void UninitPlane()
 {
 	// free used memory
-	delete plane;
+	SAFE_DELETE(plane);
 }
 
 void DrawPlane()

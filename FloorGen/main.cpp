@@ -4,6 +4,7 @@
 #include "common.h"
 #include "mydirect3d.h"
 #include "texture.h"
+#include "meshLoader.h"
 #include "input.h"
 #include "sprite.h"
 #include "sceneManagement.h"
@@ -11,6 +12,7 @@
 #include "result.h"
 #include "camera.h"
 #include "floorgenerator.h"
+#include "enemy.h"
 
 
 //ライブラリファイルのリンク（exeファイルに含める）
@@ -125,7 +127,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	Keyboard_Initialize(hInstance, g_hWnd);
 
-	ShowCursor(false);
+	//ShowCursor(false);
 
 	MSG msg = {};
 	bool init_title = false;
@@ -148,7 +150,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 			switch (GetScene())
 			{
 			case SCENE_TITLESCREEN:
-				// free memory used in game and init title screen
 				if (!init_title)
 				{
 					FinalizeResult();
@@ -162,7 +163,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				break;
 
 			case SCENE_GAMESCREEN:
-				// free memory used in title and init title screen
 				if (!init_game)
 				{
 					FinalizeTitle();
@@ -176,7 +176,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 				break;
 
 			case SCENE_RESULTSCREEN:
-				// free memory used in title and init title screen
 				if (!init_result)
 				{
 					FinalizeGame();
@@ -240,6 +239,7 @@ bool InitLibrary()
 	InitRenderState();
 
 	Texture_Load();
+	LoadMesh();
 	InitSprite();
 	InitScene();
 
@@ -250,6 +250,7 @@ void FinalizeLibrary()
 {
 	Keyboard_Finalize();
 	UninitSprite();
+	UninitMesh();
 	Texture_Release();
 
 	MyDirect3D_Finalize();
@@ -301,18 +302,21 @@ bool InitGame()
 {
 	InitCamera();
 	InitPlane();
+	InitEnemy();
 
 	return true;
 }
 
 void FinalizeGame()
 {
+	UninitEnemy();
 	UninitPlane();
 	UninitCamera();
 }
 
 void UpdateGame()
 {
+	UpdateEnemy();
 	UpdateCamera();
 }
 
@@ -327,6 +331,7 @@ void DrawGame()
 	pDevice->BeginScene();
 
 	DrawPlane();
+	DrawEnemy();
 
 	// draw sprites
 	SpriteStart();

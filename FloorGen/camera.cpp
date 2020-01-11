@@ -7,8 +7,8 @@
 
 
 // globals
-POINT g_curPos, g_fixedPos = {500, 500};
 Camera* g_pCam;
+POINT g_curPos, g_fixedPos = {500, 500};
 
 // function def
 void CameraInput();
@@ -73,7 +73,7 @@ void UpdateCamera()
 
 void UninitCamera()
 {
-	if (g_pCam) delete g_pCam;
+	SAFE_DELETE(g_pCam);
 }
 
 void CameraInput()
