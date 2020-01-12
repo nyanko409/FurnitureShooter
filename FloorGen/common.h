@@ -11,9 +11,9 @@
 	FULLSCREEN: 1440 x 900 (wide)
 	WINDOWED:	1920 x 1080
 */
-#define FULLSCREEN		true
-#define SCREEN_WIDTH	(1440)
-#define SCREEN_HEIGHT	(900)
+#define FULLSCREEN		false
+#define SCREEN_WIDTH	(1920)
+#define SCREEN_HEIGHT	(1080)
 
 #define FPS				60
 #define TIME_PER_FRAME	(float)1/FPS

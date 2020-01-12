@@ -82,7 +82,7 @@ void CameraInput()
 	GetCursorPos(&g_curPos);
 	POINT diffPoint = g_curPos - g_fixedPos;
 
-	g_pCam->Rotate(diffPoint.x, diffPoint.y);
+ 	g_pCam->Rotate(diffPoint.x, diffPoint.y);
 
 	// set cursor back to a fixed point
 	SetCursorPos(g_fixedPos.x, g_fixedPos.y);
