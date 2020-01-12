@@ -1,5 +1,7 @@
+#include <vector>
 #include "enemy.h"
 #include "mydirect3d.h"
+#include "transformation.h"
 
 
 Enemy::Enemy(MESH_NAME mesh, Transform transform) : transform(transform)
@@ -16,19 +18,25 @@ Enemy::~Enemy()
 
 
 
-Enemy* g_enemy;
+std::vector<Enemy*> g_enemy;
 
 void RaycastFromMousePos();
 
 
 void InitEnemy()
 {
-	g_enemy = new Enemy(MESH_COIN, Transform());
+	g_enemy.emplace_back(new Enemy(MESH_COIN, Transform()));
+	g_enemy.emplace_back(new Enemy(MESH_SKATEBOARD, Transform({20, 0, 0})));
 }
 
 void UninitEnemy()
 {
-	SAFE_DELETE(g_enemy);
+	for (auto enemy : g_enemy)
+	{
+		SAFE_DELETE(enemy);
+	}
+
+	g_enemy.clear();
 }
 
 void UpdateEnemy()
@@ -41,16 +49,25 @@ void DrawEnemy()
 	auto device = MyDirect3D_GetDevice();
 
 	// draw mesh
-	for (DWORD i = 0; i < g_enemy->mesh->numMaterial; i++)
+	for (int j = 0; j < g_enemy.size(); j++)
 	{
-		device->SetMaterial(&g_enemy->mesh->pMaterial[i]);
+		// set world matrix
+		auto world = TransformObject(g_enemy[j]->transform.position, g_enemy[j]->transform.scale,
+			g_enemy[j]->transform.rotation);
+		device->SetTransform(D3DTS_WORLD, &world);
 
-		if (g_enemy->mesh->pTexture[i] != NULL)
-			device->SetTexture(0, g_enemy->mesh->pTexture[i]);
-		else
-			device->SetTexture(0, NULL);
+		// draw
+		for (DWORD i = 0; i < g_enemy[j]->mesh->numMaterial; i++)
+		{
+			device->SetMaterial(&g_enemy[j]->mesh->pMaterial[i]);
 
-		g_enemy->mesh->mesh->DrawSubset(i);
+			if (g_enemy[j]->mesh->pTexture[i] != NULL)
+				device->SetTexture(0, g_enemy[j]->mesh->pTexture[i]);
+			else
+				device->SetTexture(0, NULL);
+
+			g_enemy[j]->mesh->mesh->DrawSubset(i);
+		}
 	}
 }
 
@@ -62,7 +79,6 @@ void RaycastFromMousePos()
 	D3DXMATRIX matProjection, matView, matWorld, matInverse;
 	pDevice->GetTransform(D3DTS_PROJECTION, &matProjection);
 	pDevice->GetTransform(D3DTS_VIEW, &matView);
-	pDevice->GetTransform(D3DTS_WORLD, &matWorld);
 
 	// use the mouse coordinates to get the mouse angle
 	POINT mousePos;
@@ -74,6 +90,10 @@ void RaycastFromMousePos()
 	origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	direction = D3DXVECTOR3(xAngle, yAngle, 1.0f);
 
+	// set world transform
+	matWorld = TransformObject(g_enemy[1]->transform.position, g_enemy[1]->transform.scale,
+		g_enemy[1]->transform.rotation);
+
 	// find the inverse matrix
 	D3DXMatrixInverse(&matInverse, NULL, &(matWorld * matView));
 
@@ -84,7 +104,7 @@ void RaycastFromMousePos()
 
 	// detect picking
 	BOOL hit;
-	D3DXIntersect(g_enemy->mesh->mesh, &origin, &direction, &hit, NULL, NULL, NULL, NULL, NULL, NULL);
+	D3DXIntersect(g_enemy[1]->mesh->mesh, &origin, &direction, &hit, NULL, NULL, NULL, NULL, NULL, NULL);
 	if (hit)
 		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	else

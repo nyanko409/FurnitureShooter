@@ -13,6 +13,7 @@
 #include "camera.h"
 #include "floorgenerator.h"
 #include "enemy.h"
+#include "crosshair.h"
 
 
 //ライブラリファイルのリンク（exeファイルに含める）
@@ -127,7 +128,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 	Keyboard_Initialize(hInstance, g_hWnd);
 
-	//ShowCursor(false);
+	ShowCursor(false);
 
 	MSG msg = {};
 	bool init_title = false;
@@ -208,9 +209,6 @@ LRESULT CALLBACK WndProc(HWND g_hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	case WM_KEYDOWN:
 		if (wParam == VK_ESCAPE) {
 			std::exit(0);
-			//ShowCursor(true);
-			//SendMessage(g_hWnd, WM_CLOSE, 0, 0);
-			//ShowCursor(false);
 		}
 		break;
 
@@ -304,12 +302,14 @@ bool InitGame()
 	InitCamera();
 	InitPlane();
 	InitEnemy();
+	InitCrosshair();
 
 	return true;
 }
 
 void FinalizeGame()
 {
+	UninitCrosshair();
 	UninitEnemy();
 	UninitPlane();
 	UninitCamera();
@@ -318,6 +318,7 @@ void FinalizeGame()
 void UpdateGame()
 {
 	UpdateEnemy();
+	UpdateCrosshair();
 	UpdateCamera();
 }
 
@@ -336,6 +337,8 @@ void DrawGame()
 
 	// draw sprites
 	SpriteStart();
+
+	DrawCrosshair();
 
 	// end draw
 	SpriteEnd();

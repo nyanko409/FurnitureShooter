@@ -10,7 +10,8 @@
 // add mesh name to this enum
 enum MESH_NAME
 {
-	MESH_COIN
+	MESH_COIN,
+	MESH_SKATEBOARD
 };
 
 // data struct for unanimated meshes

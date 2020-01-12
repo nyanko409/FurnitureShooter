@@ -8,6 +8,7 @@
 std::vector<MESH_DATA> g_mesh
 {
 	{"asset/mesh/medal_gold.x"},
+	{"asset/mesh/skateboard.x"},
 };
 
 
