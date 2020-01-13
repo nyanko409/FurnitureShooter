@@ -9,8 +9,9 @@ class Enemy
 public:
 	Transform transform;
 	MESH_DATA* mesh;
+	float moveSpeed;
 
-	Enemy(MESH_NAME mesh, Transform transform);
+	Enemy(MESH_NAME mesh, Transform transform, float moveSpeed);
 
 	~Enemy();
 };

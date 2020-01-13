@@ -2,9 +2,11 @@
 #include "enemy.h"
 #include "mydirect3d.h"
 #include "transformation.h"
+#include "camera.h"
 
 
-Enemy::Enemy(MESH_NAME mesh, Transform transform) : transform(transform)
+Enemy::Enemy(MESH_NAME mesh, Transform transform, float moveSpeed) : 
+	transform(transform), moveSpeed(moveSpeed)
 {
 	this->mesh = GetMesh(mesh);
 }
@@ -25,8 +27,8 @@ int RaycastFromMousePos();
 
 void InitEnemy()
 {
-	g_enemy.emplace_back(new Enemy(MESH_COIN, Transform()));
-	g_enemy.emplace_back(new Enemy(MESH_SKATEBOARD, Transform({20, 0, 0})));
+	g_enemy.emplace_back(new Enemy(MESH_COIN, Transform(), 0.1F));
+	g_enemy.emplace_back(new Enemy(MESH_SKATEBOARD, Transform({20, 0, 0}), 0.2F));
 }
 
 void UninitEnemy()
@@ -41,9 +43,12 @@ void UninitEnemy()
 
 void UpdateEnemy()
 {
-	// check for left mouse input
-	if (GetAsyncKeyState(VK_LBUTTON) < 0)
+	static bool leftMouseClicked = false;
+
+	if (!leftMouseClicked && GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
+		// left mouse clicked
+		leftMouseClicked = true;
 		int hitIndex = RaycastFromMousePos();
 
 		// if hit with something
@@ -51,6 +56,20 @@ void UpdateEnemy()
 		{
 			g_enemy.erase(g_enemy.begin() + hitIndex);
 		}
+	}
+	else if(!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))
+	{
+		// left mouse released
+		leftMouseClicked = false;
+	}
+
+	// move enemy to camera
+	for (int i = 0; i < g_enemy.size(); ++i)
+	{
+		D3DXVECTOR3 dir = GetCamera()->position - g_enemy[i]->transform.position;
+		D3DXVec3Normalize(&dir, &dir);
+
+		g_enemy[i]->transform.position += dir * g_enemy[i]->moveSpeed;
 	}
 }
 
