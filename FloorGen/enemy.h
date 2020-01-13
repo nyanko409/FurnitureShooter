@@ -12,6 +12,7 @@ public:
 	float moveSpeed;
 
 	Enemy(MESH_NAME mesh, Transform transform, float moveSpeed);
+	Enemy(MESH_DATA* mesh, Transform transform, float moveSpeed);
 
 	~Enemy();
 };

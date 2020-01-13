@@ -6,15 +6,12 @@
 
 
 Enemy::Enemy(MESH_NAME mesh, Transform transform, float moveSpeed) : 
-	transform(transform), moveSpeed(moveSpeed)
-{
-	this->mesh = GetMesh(mesh);
-}
+	transform(transform), moveSpeed(moveSpeed), mesh(GetMesh(mesh)) {}
 
-Enemy::~Enemy()
-{
+Enemy::Enemy(MESH_DATA* mesh, Transform transform, float moveSpeed) :
+	transform(transform), moveSpeed(moveSpeed), mesh(mesh) {}
 
-}
+Enemy::~Enemy() {}
 
 
 
@@ -22,13 +19,13 @@ Enemy::~Enemy()
 
 std::vector<Enemy*> g_enemy;
 
-int RaycastFromMousePos();
+std::vector<int> RaycastFromMousePos();
+void SpawnEnemyRandomAt(D3DXVECTOR3 position, float radius);
 
 
 void InitEnemy()
 {
-	g_enemy.emplace_back(new Enemy(MESH_COIN, Transform(), 0.1F));
-	g_enemy.emplace_back(new Enemy(MESH_SKATEBOARD, Transform({20, 0, 0}), 0.2F));
+
 }
 
 void UninitEnemy()
@@ -44,18 +41,29 @@ void UninitEnemy()
 void UpdateEnemy()
 {
 	static bool leftMouseClicked = false;
+	static float timeBetweenSpawn = 1.0F;
+	static float timeTillNextSpawn = 0;
 
+	// spawn enemy
+	timeTillNextSpawn += TIME_PER_FRAME;
+	if (timeTillNextSpawn >= timeBetweenSpawn)
+	{
+		timeTillNextSpawn -= timeBetweenSpawn;
+		SpawnEnemyRandomAt(GetCamera()->position, 30);
+	}
+
+	// check for input and delete enemies hit by raycast
 	if (!leftMouseClicked && GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
-		// left mouse clicked
+		// left mouse clicked, get index of all enemies hit by ray
 		leftMouseClicked = true;
-		int hitIndex = RaycastFromMousePos();
+		auto hitIndices = RaycastFromMousePos();
 
-		// if hit with something
-		if (hitIndex != -1)
+		// loop from back and delete objects hit by the ray
+		for (int i = hitIndices.size() - 1; i >= 0; --i)
 		{
-			g_enemy.erase(g_enemy.begin() + hitIndex);
-		}
+			g_enemy.erase(g_enemy.begin() + hitIndices[i]);
+		}  
 	}
 	else if(!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))
 	{
@@ -63,7 +71,7 @@ void UpdateEnemy()
 		leftMouseClicked = false;
 	}
 
-	// move enemy to camera
+	// move enemy towards camera
 	for (int i = 0; i < g_enemy.size(); ++i)
 	{
 		D3DXVECTOR3 dir = GetCamera()->position - g_enemy[i]->transform.position;
@@ -100,9 +108,10 @@ void DrawEnemy()
 	}
 }
 
-int RaycastFromMousePos()
+std::vector<int> RaycastFromMousePos()
 {
 	auto pDevice = MyDirect3D_GetDevice();
+	auto indices = std::vector<int>();
 
 	// get the current transform matrices
 	D3DXMATRIX matProjection, matView, matWorld, matInverse;
@@ -118,9 +127,6 @@ int RaycastFromMousePos()
 	// loop for every enemy
 	for (int i = 0; i < g_enemy.size(); ++i)
 	{
-		D3DXVECTOR3 origin = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		D3DXVECTOR3 direction = D3DXVECTOR3(xAngle, yAngle, 1.0f);
-
 		// set world transform
 		matWorld = TransformObject(g_enemy[i]->transform.position, g_enemy[i]->transform.scale,
 			g_enemy[i]->transform.rotation);
@@ -129,16 +135,38 @@ int RaycastFromMousePos()
 		D3DXMatrixInverse(&matInverse, NULL, &(matWorld * matView));
 
 		// convert origin and direction into model space
-		D3DXVec3TransformCoord(&origin, &origin, &matInverse);
-		D3DXVec3TransformNormal(&direction, &direction, &matInverse);
+		D3DXVECTOR3 origin, direction;
+		D3DXVec3TransformCoord(&origin, &D3DXVECTOR3{0, 0, 0}, &matInverse);
+		D3DXVec3TransformNormal(&direction, &D3DXVECTOR3{xAngle, yAngle, 1}, &matInverse);
 		D3DXVec3Normalize(&direction, &direction);
 
 		// cast ray
 		BOOL hit;
 		D3DXIntersect(g_enemy[i]->mesh->mesh, &origin, &direction, &hit, NULL, NULL, NULL, NULL, NULL, NULL);
 		if (hit)
-			return i;
+			indices.emplace_back(i);
 	}
 
-	return -1;
+	return indices;
+}
+
+void SpawnEnemyRandomAt(D3DXVECTOR3 position, float radius)
+{
+	// init position
+	D3DXVECTOR3 pos{radius, 0, 0};
+
+	// rotate final pos by random z and random y degree
+	D3DXMATRIX mRotZ, mRotY;
+	D3DXMatrixRotationZ(&mRotZ, D3DXToRadian(rand() % 46));
+	D3DXMatrixRotationY(&mRotY, D3DXToRadian(rand() % 361));
+	D3DXVec3TransformCoord(&pos, &pos, &(mRotZ * mRotY));
+
+	// offset to final position
+	pos += position;
+
+	// get random rotation
+	D3DXVECTOR3 rot(rand() % 361, rand() % 361 , rand() % 361);
+
+	// spawn random enemy
+	g_enemy.emplace_back(new Enemy(GetRandomMesh(), Transform(pos, rot), 0.1F));
 }

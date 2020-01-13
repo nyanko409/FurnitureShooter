@@ -94,6 +94,11 @@ MESH_DATA* GetMesh(MESH_NAME name)
 	return &g_mesh[name];
 }
 
+MESH_DATA* GetRandomMesh()
+{
+	return &g_mesh[rand() % g_mesh.size()];
+}
+
 void UninitMesh()
 {
 	// free unanimated mesh

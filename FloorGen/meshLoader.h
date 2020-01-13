@@ -33,3 +33,6 @@ void UninitMesh();
 
 // get unanimted mesh
 MESH_DATA* GetMesh(MESH_NAME name);
+
+// return random mesh
+MESH_DATA* GetRandomMesh();

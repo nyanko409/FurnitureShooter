@@ -20,7 +20,7 @@ POINT operator - (POINT o1, POINT o2) { return POINT{ o1.x - o2.x, o1.y - o2.y }
 void InitCamera()
 {
 	// init camera
-	g_pCam = new Camera(D3DXVECTOR3(0, 0, -10), D3DXVECTOR3(0, 0, 1));
+	g_pCam = new Camera(D3DXVECTOR3(0, 3, 0), D3DXVECTOR3(0, 0, 1));
 
 	// init cursor pos
 	g_curPos = g_fixedPos;
@@ -89,49 +89,42 @@ void CameraInput()
 	g_curPos = g_fixedPos;
 
 	// camera movement
-	if (Keyboard_IsPress(DIK_W))
-	{
-		// move cam forward
-		g_pCam->position += g_pCam->forward * g_pCam->moveSpeed;
-		g_pCam->lookDirection += g_pCam->forward * g_pCam->moveSpeed;
-	}
-	if (Keyboard_IsPress(DIK_A))
-	{
-		// move cam left
-		g_pCam->position += -g_pCam->right * g_pCam->moveSpeed;
-		g_pCam->lookDirection += -g_pCam->right * g_pCam->moveSpeed;
-	}
-	if (Keyboard_IsPress(DIK_S))
-	{
-		// move cam backward
-		g_pCam->position += -g_pCam->forward * g_pCam->moveSpeed;
-		g_pCam->lookDirection += -g_pCam->forward * g_pCam->moveSpeed;
-	}
-	if (Keyboard_IsPress(DIK_D))
-	{
-		// move cam right
-		g_pCam->position += g_pCam->right * g_pCam->moveSpeed;
-		g_pCam->lookDirection += g_pCam->right * g_pCam->moveSpeed;
-	}
-	if (Keyboard_IsPress(DIK_Q))
-	{
-		// move cam up
-		g_pCam->position.y += g_pCam->moveSpeed;
-		g_pCam->lookDirection.y += g_pCam->moveSpeed;
-	}
-	if (Keyboard_IsPress(DIK_E))
-	{
-		// move cam down
-		g_pCam->position.y += -g_pCam->moveSpeed;
-		g_pCam->lookDirection.y += -g_pCam->moveSpeed;
-	}
-
-	// fov
-	if (Keyboard_IsPress(DIK_M) && g_pCam->fov < 3)
-		g_pCam->fov += 0.01f;
-
-	if (Keyboard_IsPress(DIK_N) && g_pCam->fov > 1)
-		g_pCam->fov -= 0.01f;
+	//if (Keyboard_IsPress(DIK_W))
+	//{
+	//	// move cam forward
+	//	g_pCam->position += g_pCam->forward * g_pCam->moveSpeed;
+	//	g_pCam->lookDirection += g_pCam->forward * g_pCam->moveSpeed;
+	//}
+	//if (Keyboard_IsPress(DIK_A))
+	//{
+	//	// move cam left
+	//	g_pCam->position += -g_pCam->right * g_pCam->moveSpeed;
+	//	g_pCam->lookDirection += -g_pCam->right * g_pCam->moveSpeed;
+	//}
+	//if (Keyboard_IsPress(DIK_S))
+	//{
+	//	// move cam backward
+	//	g_pCam->position += -g_pCam->forward * g_pCam->moveSpeed;
+	//	g_pCam->lookDirection += -g_pCam->forward * g_pCam->moveSpeed;
+	//}
+	//if (Keyboard_IsPress(DIK_D))
+	//{
+	//	// move cam right
+	//	g_pCam->position += g_pCam->right * g_pCam->moveSpeed;
+	//	g_pCam->lookDirection += g_pCam->right * g_pCam->moveSpeed;
+	//}
+	//if (Keyboard_IsPress(DIK_Q))
+	//{
+	//	// move cam up
+	//	g_pCam->position.y += g_pCam->moveSpeed;
+	//	g_pCam->lookDirection.y += g_pCam->moveSpeed;
+	//}
+	//if (Keyboard_IsPress(DIK_E))
+	//{
+	//	// move cam down
+	//	g_pCam->position.y += -g_pCam->moveSpeed;
+	//	g_pCam->lookDirection.y += -g_pCam->moveSpeed;
+	//}
 }
 
 Camera* GetCamera()
