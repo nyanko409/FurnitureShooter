@@ -3,6 +3,8 @@
 #include "mydirect3d.h"
 #include "transformation.h"
 #include "camera.h"
+#include "score.h"
+#include "sceneManagement.h"
 
 
 Enemy::Enemy(MESH_NAME mesh, Transform transform, float moveSpeed) : 
@@ -63,6 +65,7 @@ void UpdateEnemy()
 		for (int i = hitIndices.size() - 1; i >= 0; --i)
 		{
 			g_enemy.erase(g_enemy.begin() + hitIndices[i]);
+			AddScore(10);
 		}  
 	}
 	else if(!(GetAsyncKeyState(VK_LBUTTON) & 0x8000))
@@ -75,9 +78,16 @@ void UpdateEnemy()
 	for (int i = 0; i < g_enemy.size(); ++i)
 	{
 		D3DXVECTOR3 dir = GetCamera()->position - g_enemy[i]->transform.position;
-		D3DXVec3Normalize(&dir, &dir);
+		D3DXVECTOR3 dirNormalized;
+		D3DXVec3Normalize(&dirNormalized, &dir);
 
-		g_enemy[i]->transform.position += dir * g_enemy[i]->moveSpeed;
+		g_enemy[i]->transform.position += dirNormalized * g_enemy[i]->moveSpeed;
+
+		// enemy reached camera, game over
+		if (D3DXVec3Length(&dir) < 2.0F)
+		{
+			//SetScene(SCENE_RESULTSCREEN);
+		}
 	}
 }
 

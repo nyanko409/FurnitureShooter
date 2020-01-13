@@ -14,16 +14,17 @@
 #include "floorgenerator.h"
 #include "enemy.h"
 #include "crosshair.h"
+#include "score.h"
 
 
 //ライブラリファイルのリンク（exeファイルに含める）
-#pragma comment(lib,"d3d9.lib")
-#pragma comment(lib,"d3dx9.lib")
-#pragma comment(lib,"dxguid.lib")
+#pragma comment(lib, "d3d9.lib")
+#pragma comment(lib, "d3dx9.lib")
+#pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "dinput8.lib")
 
 #define CLASS_NAME      "GameWindow"
-#define WINDOW_CAPTION  "家具シューター"
+#define WINDOW_CAPTION  "fuck you"
 
 // window
 static HWND g_hWnd;
@@ -145,7 +146,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		else
 		{
 			// update and draw every frame
-			Sleep(7);
+			Sleep(TIME_PER_FRAME);
 			Keyboard_Update();
 
 			switch (GetScene())
@@ -198,6 +199,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	//ゲームの終了処理
 	FinalizeTitle();
 	FinalizeGame();
+	FinalizeResult();
 	FinalizeLibrary();
 	return (int)msg.wParam;
 }
@@ -241,6 +243,7 @@ bool InitLibrary()
 	LoadMesh();
 	InitSprite();
 	InitScene();
+	InitScore();
 
 	return true;
 }
@@ -303,6 +306,7 @@ bool InitGame()
 	InitPlane();
 	InitEnemy();
 	InitCrosshair();
+	ResetScore();
 
 	return true;
 }
@@ -319,6 +323,7 @@ void UpdateGame()
 {
 	UpdateEnemy();
 	UpdateCrosshair();
+	UpdateScore();
 	UpdateCamera();
 }
 
@@ -327,7 +332,7 @@ void DrawGame()
 	LPDIRECT3DDEVICE9 pDevice = MyDirect3D_GetDevice();
 
 	//バックバッファーのクリア 紫色は230，0，255，255
-	pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0, 0, 0), 1.0F, 0);
+	pDevice->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(255, 255, 255), 1.0F, 0);
 
 	// draw 3d meshes
 	pDevice->BeginScene();
@@ -339,6 +344,7 @@ void DrawGame()
 	SpriteStart();
 
 	DrawCrosshair();
+	DrawScore();
 
 	// end draw
 	SpriteEnd();
@@ -380,6 +386,7 @@ void DrawResult()
 	SpriteStart();
 
 	DrawResultScreen();
+	DrawScore();
 
 	// end draw
 	SpriteEnd();
@@ -396,7 +403,7 @@ void InitRenderState()
 	auto device = MyDirect3D_GetDevice();
 
 	// init 3d rendering
-	device->SetRenderState(D3DRS_LIGHTING, false);
+	device->SetRenderState(D3DRS_LIGHTING, true);
 	device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 	device->SetRenderState(D3DRS_ZENABLE, true);
 	device->SetRenderState(D3DRS_NORMALIZENORMALS, true);
@@ -416,6 +423,17 @@ void InitRenderState()
 	device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
 	device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_DIFFUSE);
 	device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_TEXTURE);
+
+	D3DLIGHT9 light;
+	ZeroMemory(&light, sizeof(D3DLIGHT9));
+
+	light.Type = D3DLIGHT_DIRECTIONAL;
+	light.Direction = D3DXVECTOR3{0,-1,1};
+	light.Diffuse = D3DXCOLOR(1, 1, 1, 1);
+	//light.Ambient = D3DXCOLOR(0.5F, 0.5F, 0.5F, 1.0F);
+
+	device->SetLight(0, &light);
+	device->LightEnable(0, true);
 
 	// set texture sampling
 	//device->SetSamplerState(0, D3DSAMP_MAXANISOTROPY, 8);

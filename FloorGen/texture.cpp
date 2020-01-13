@@ -20,6 +20,8 @@ static const TextureFile g_TextureFiles[] = {
 	{"asset/texture/sand.jpg",		1024, 1024},
 	{"asset/texture/title.dds",		1920, 1080},
 	{"asset/texture/crosshair.png",	144, 144},
+	{"asset/texture/score.png",		1025,  503},
+	{"asset/texture/result.png",	1920, 1080},
 };
 
 // texture file count
@@ -51,7 +53,7 @@ int Texture_Load(void)
 		
 		if (D3DXCreateTextureFromFileEx(pDevice, g_TextureFiles[i].filename, 
 			0, 0, 
-			0, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 
+			1, 0, D3DFMT_UNKNOWN, D3DPOOL_MANAGED, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 
 			D3DCOLOR_ARGB(150, 100, 100, 100), NULL, NULL, &g_pTextures[i]))
 			failed_count++;
 	}

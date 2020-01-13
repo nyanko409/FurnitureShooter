@@ -9,6 +9,10 @@ std::vector<MESH_DATA> g_mesh
 {
 	{"asset/mesh/medal_gold.x"},
 	{"asset/mesh/skateboard.x"},
+	{"asset/mesh/trashcan.x"},
+	{"asset/mesh/toilet.x"},
+	{"asset/mesh/cat.x"},
+	{"asset/mesh/starwars1.x"},
 };
 
 

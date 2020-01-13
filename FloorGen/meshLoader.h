@@ -11,7 +11,11 @@
 enum MESH_NAME
 {
 	MESH_COIN,
-	MESH_SKATEBOARD
+	MESH_SKATEBOARD,
+	MESH_TRASHCAN,
+	MESH_TOILET,
+	MESH_CAT,
+	MESH_STARWARS1
 };
 
 // data struct for unanimated meshes
