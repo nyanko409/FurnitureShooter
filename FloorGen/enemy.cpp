@@ -74,14 +74,18 @@ void UpdateEnemy()
 		leftMouseClicked = false;
 	}
 
-	// move enemy towards camera
+	// loop for every enemy
 	for (int i = 0; i < g_enemy.size(); ++i)
 	{
+		// move enemy towards the camera
 		D3DXVECTOR3 dir = GetCamera()->position - g_enemy[i]->transform.position;
 		D3DXVECTOR3 dirNormalized;
 		D3DXVec3Normalize(&dirNormalized, &dir);
 
 		g_enemy[i]->transform.position += dirNormalized * g_enemy[i]->moveSpeed;
+
+		// rotate enemy
+		g_enemy[i]->transform.rotation.x++;
 
 		// enemy reached camera, game over
 		if (D3DXVec3Length(&dir) < 2.0F)
