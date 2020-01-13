@@ -1,12 +1,19 @@
+#include <vector>
 #include "mydirect3d.h"
 #include "floorgenerator.h"
+#include "transformation.h"
 
 
-
-Plane::Plane(int xCount, int zCount, float xLength, float zLength)
+Plane::Plane(Transform transform, int xCount, int zCount, float xLength, float zLength) :
+	transform(transform)
 {
 	data = new PlaneData();
 	CreatePlane(xCount, zCount, xLength, zLength);
+}
+
+Plane::Plane(Plane& plane)
+{
+	data = plane.data;
 }
 
 Plane::~Plane()
@@ -14,13 +21,13 @@ Plane::~Plane()
 	// free memory
 	if (data != nullptr)
 	{
-		if (data->vBuffer != nullptr) data->vBuffer->Release();
-		if (data->iBuffer != nullptr) data->iBuffer->Release();
+		SAFE_RELEASE(data->vBuffer);
+		SAFE_RELEASE(data->iBuffer);
 
-		if (data->vert != nullptr) delete data->vert;
-		if (data->indices != nullptr) delete data->indices;
+		SAFE_DELETE(data->vert);
+		SAFE_DELETE(data->indices);
 
-		delete data;
+		SAFE_DELETE(data);
 	}
 }
 
@@ -112,37 +119,64 @@ void Plane::CreatePlane(int x, int z, float xLength, float zLength)
 
 
 // floor
-Plane* plane;
+std::vector<Plane*> g_plane;
 
 
 void InitPlane()
 {
-	plane = new Plane(10, 10, 5, 5);
-	plane->texuture = Texture_GetTexture(TEXTURE_INDEX_GROUND);
+	g_plane.emplace_back(new Plane(Transform(), 10, 10, 5, 5));
+	g_plane[0]->texuture = Texture_GetTexture(TEXTURE_INDEX_GROUND);
+
+	g_plane.emplace_back(new Plane(Transform({ 0, 50, 0 }, { 0, 0, 180}, { 3, 1, 3 }), 10, 10, 5, 5));
+	g_plane[1]->texuture = Texture_GetTexture(TEXTURE_INDEX_SKY);
+
+	g_plane.emplace_back(new Plane(Transform({ 0, 20, 40 }, { -90, 0, -90 }, {1, 1, 2}), 10, 10, 5, 5));
+	g_plane[2]->texuture = Texture_GetTexture(TEXTURE_INDEX_MOUNTAIN);
+
+	g_plane.emplace_back(new Plane(Transform({ 0, 20, -40 }, { 90, 0, -90 }, { 1, 1, 2 }), 10, 10, 5, 5));
+	g_plane[3]->texuture = Texture_GetTexture(TEXTURE_INDEX_MOUNTAIN);
+
+	g_plane.emplace_back(new Plane(Transform({ 40, 20, 0 }, { 0, 180, 90 }, { 1, 1, 2 }), 10, 10, 5, 5));
+	g_plane[4]->texuture = Texture_GetTexture(TEXTURE_INDEX_MOUNTAIN);
+
+	g_plane.emplace_back(new Plane(Transform({ -40, 20, 0 }, { 0, 0, -90 }, { 1, 1, 2 }), 10, 10, 5, 5));
+	g_plane[5]->texuture = Texture_GetTexture(TEXTURE_INDEX_MOUNTAIN);
 }
 
 void UninitPlane()
 {
 	// free used memory
-	SAFE_DELETE(plane);
+	for (Plane* plane : g_plane)
+	{
+		SAFE_DELETE(plane);
+	}
+
+	g_plane.clear();
 }
 
 void DrawPlane()
 {
 	auto pDevice = MyDirect3D_GetDevice();
 
-	// select the vertex and index buffer to display
-	pDevice->SetFVF(CUSTOM_FVF);
-	pDevice->SetStreamSource(0, plane->data->vBuffer, 0, sizeof(CUSTOM_VERTEX));
-	pDevice->SetIndices(plane->data->iBuffer);
+	pDevice->SetRenderState(D3DRS_LIGHTING, false);
 
-	// set the world transform
-	D3DXMATRIX identity;
-	D3DXMatrixIdentity(&identity);
-	pDevice->SetTransform(D3DTS_WORLD, &identity);
+	for (Plane* plane : g_plane)
+	{
+		// select the vertex and index buffer to display
+		pDevice->SetFVF(CUSTOM_FVF);
+		pDevice->SetStreamSource(0, plane->data->vBuffer, 0, sizeof(CUSTOM_VERTEX));
+		pDevice->SetIndices(plane->data->iBuffer);
 
-	// draw
-	pDevice->SetTexture(0, plane->texuture);
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0, 
-		plane->data->vertCount, 0, plane->data->indexCount - 2);
+		// set the world transform
+		D3DXMATRIX mWorld = TransformObject(plane->transform.position,
+			plane->transform.scale, plane->transform.rotation);
+		pDevice->SetTransform(D3DTS_WORLD, &mWorld);
+
+		// draw
+		pDevice->SetTexture(0, plane->texuture);
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP, 0, 0,
+			plane->data->vertCount, 0, plane->data->indexCount - 2);
+	}
+
+	pDevice->SetRenderState(D3DRS_LIGHTING, true);
 }

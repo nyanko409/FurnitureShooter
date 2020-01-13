@@ -22,6 +22,8 @@ static const TextureFile g_TextureFiles[] = {
 	{"asset/texture/crosshair.png",	144, 144},
 	{"asset/texture/score.png",		1025,  503},
 	{"asset/texture/result.png",	1920, 1080},
+	{"asset/texture/mountain.png",	900, 600},
+	{"asset/texture/sky.png",	900, 600},
 };
 
 // texture file count

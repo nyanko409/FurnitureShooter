@@ -19,12 +19,13 @@ class Plane
 public:
 	PlaneData* data;				// holds vertex data for the plane
 	LPDIRECT3DTEXTURE9 texuture;	// pointer to the texture to display
+	Transform transform;
 
 	// constructor for creating new plane
-	Plane(int zCount, int xCount, float xLength, float zLength);
-
-	// share the plane data if same plane size is needed
-	Plane(PlaneData* data) : data(data) {}
+	Plane(Transform transform, int zCount, int xCount, float xLength, float zLength);
+	Plane() {}
+	// copy constructor
+	Plane(Plane& plane);
 
 	// destructor
 	~Plane();
