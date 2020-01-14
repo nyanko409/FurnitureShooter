@@ -12,6 +12,7 @@ std::vector<MESH_DATA> g_mesh
 	{"asset/mesh/cat.x"},
 	{"asset/mesh/starwars1.x"},
 	{"asset/mesh/octopus.x"},
+	{"asset/mesh/banana.x"},
 };
 
 

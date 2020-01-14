@@ -124,10 +124,10 @@ std::vector<Plane*> g_plane;
 
 void InitPlane()
 {
-	g_plane.emplace_back(new Plane(Transform(), 10, 10, 5, 5));
+	g_plane.emplace_back(new Plane(Transform({ 0, 0, 0 }, { 0, 0, 0 }, {2, 1, 2}), 10, 10, 5, 5));
 	g_plane[0]->texuture = Texture_GetTexture(TEXTURE_INDEX_GROUND);
 
-	g_plane.emplace_back(new Plane(Transform({ 0, 50, 0 }, { 0, 0, 180}, { 3, 1, 3 }), 10, 10, 5, 5));
+	g_plane.emplace_back(new Plane(Transform({ 0, 45, 0 }, { 0, 0, 180}, { 3, 1, 3 }), 10, 10, 5, 5));
 	g_plane[1]->texuture = Texture_GetTexture(TEXTURE_INDEX_SKY);
 
 	g_plane.emplace_back(new Plane(Transform({ 0, 20, 40 }, { -90, 0, -90 }, {1, 1, 2}), 10, 10, 5, 5));

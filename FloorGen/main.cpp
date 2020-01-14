@@ -6,7 +6,9 @@
 #include "texture.h"
 #include "meshLoader.h"
 #include "input.h"
+#include "font.h"
 #include "sprite.h"
+#include "sound.h"
 #include "sceneManagement.h"
 #include "Title.h"
 #include "result.h"
@@ -24,7 +26,7 @@
 #pragma comment(lib, "dinput8.lib")
 
 #define CLASS_NAME      "GameWindow"
-#define WINDOW_CAPTION  "fuck you"
+#define WINDOW_CAPTION  "game title"
 
 // window
 static HWND g_hWnd;
@@ -241,8 +243,10 @@ bool InitLibrary()
 
 	Texture_Load();
 	LoadMesh();
+	InitFont();
 	InitSprite();
 	InitScene();
+	InitSound(g_hWnd);
 	InitScore();
 
 	return true;
@@ -254,6 +258,8 @@ void FinalizeLibrary()
 	UninitSprite();
 	UninitMesh();
 	Texture_Release();
+	UninitFont();
+	UninitSound();
 
 	MyDirect3D_Finalize();
 }
@@ -262,18 +268,21 @@ void FinalizeLibrary()
 bool InitTitle()
 {
 	InitTitleScreen();
+	InitCamera();
 
 	return true;
 }
 
 void FinalizeTitle()
 {
+	UninitCamera();
 	FinalizeTitleScreen();
 }
 
 void UpdateTitle()
 {
 	UpdateTitleScreen();
+	UpdateCamera();
 }
 
 void DrawTitle()
@@ -285,6 +294,8 @@ void DrawTitle()
 
 	// draw 3d meshes
 	pDevice->BeginScene();
+
+	DrawTitleScreen();
 
 	// draw sprites
 	SpriteStart();
@@ -414,6 +425,7 @@ void InitRenderState()
 	device->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
 	device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
 	device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+	//device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
 
 	// set source of color and alpha
 	device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);

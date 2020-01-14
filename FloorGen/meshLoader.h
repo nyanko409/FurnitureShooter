@@ -14,7 +14,8 @@ enum MESH_NAME
 	MESH_TOILET,
 	MESH_CAT,
 	MESH_STARWARS1,
-	MESH_OCTOPUS
+	MESH_OCTOPUS,
+	MESH_BANANA
 };
 
 // data struct for unanimated meshes

@@ -126,6 +126,7 @@
     <ClCompile Include="crosshair.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="floorgenerator.cpp" />
+    <ClCompile Include="font.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="meshLoader.cpp" />
@@ -133,6 +134,7 @@
     <ClCompile Include="result.cpp" />
     <ClCompile Include="sceneManagement.cpp" />
     <ClCompile Include="score.cpp" />
+    <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="texture.cpp" />
     <ClCompile Include="Title.cpp" />
@@ -144,12 +146,14 @@
     <ClInclude Include="crosshair.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="floorgenerator.h" />
+    <ClInclude Include="font.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="meshLoader.h" />
     <ClInclude Include="mydirect3d.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="sceneManagement.h" />
     <ClInclude Include="score.h" />
+    <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="Title.h" />

@@ -48,12 +48,43 @@ void SetCameraPos(D3DXVECTOR3 lookAt, D3DXVECTOR3 position, int rotX, int rotY, 
 
 void UpdateCamera()
 {
-	// move camera with WASD and mouse for debug purposes
-	CameraInput();
+	g_pCam->lastPosition = g_pCam->position;
+
+	if (!GetScene() == SCENE_TITLESCREEN)
+	{
+		// move camera with WASD and mouse for debug purposes
+		CameraInput();
+	}
+
+	// clamp
+	if (g_pCam->position.x >= 35)
+	{
+		g_pCam->position.x = g_pCam->lastPosition.x;
+	}
+	if (g_pCam->position.x <= -35)
+	{
+		g_pCam->position.x = g_pCam->lastPosition.x;
+	}
+	if (g_pCam->position.y >= 37)
+	{
+		g_pCam->position.y = g_pCam->lastPosition.y;
+	}
+	if (g_pCam->position.y <= 2)
+	{
+		g_pCam->position.y = g_pCam->lastPosition.y;
+	}
+	if (g_pCam->position.z >= 35)
+	{
+		g_pCam->position.z = g_pCam->lastPosition.z;
+	}
+	if (g_pCam->position.z <= -35)
+	{
+		g_pCam->position.z = g_pCam->lastPosition.z;
+	}
+
 
 	// init matrix and get device
 	auto device = MyDirect3D_GetDevice();
-	device->SetCursorPosition(100, 100, D3DCURSOR_IMMEDIATE_UPDATE);
 	D3DXMATRIX matView, matProjection;
 
 	// set view
@@ -83,42 +114,42 @@ void CameraInput()
 	g_curPos = g_fixedPos;
 
 	// camera movement
-	//if (Keyboard_IsPress(DIK_W))
-	//{
-	//	// move cam forward
-	//	g_pCam->position += g_pCam->forward * g_pCam->moveSpeed;
-	//	g_pCam->lookDirection += g_pCam->forward * g_pCam->moveSpeed;
-	//}
-	//if (Keyboard_IsPress(DIK_A))
-	//{
-	//	// move cam left
-	//	g_pCam->position += -g_pCam->right * g_pCam->moveSpeed;
-	//	g_pCam->lookDirection += -g_pCam->right * g_pCam->moveSpeed;
-	//}
-	//if (Keyboard_IsPress(DIK_S))
-	//{
-	//	// move cam backward
-	//	g_pCam->position += -g_pCam->forward * g_pCam->moveSpeed;
-	//	g_pCam->lookDirection += -g_pCam->forward * g_pCam->moveSpeed;
-	//}
-	//if (Keyboard_IsPress(DIK_D))
-	//{
-	//	// move cam right
-	//	g_pCam->position += g_pCam->right * g_pCam->moveSpeed;
-	//	g_pCam->lookDirection += g_pCam->right * g_pCam->moveSpeed;
-	//}
-	//if (Keyboard_IsPress(DIK_Q))
-	//{
-	//	// move cam up
-	//	g_pCam->position.y += g_pCam->moveSpeed;
-	//	g_pCam->lookDirection.y += g_pCam->moveSpeed;
-	//}
-	//if (Keyboard_IsPress(DIK_E))
-	//{
-	//	// move cam down
-	//	g_pCam->position.y += -g_pCam->moveSpeed;
-	//	g_pCam->lookDirection.y += -g_pCam->moveSpeed;
-	//}
+	if (Keyboard_IsPress(DIK_W))
+	{
+		// move cam forward
+		g_pCam->position += g_pCam->forward * g_pCam->moveSpeed;
+		g_pCam->lookDirection += g_pCam->forward * g_pCam->moveSpeed;
+	}
+	if (Keyboard_IsPress(DIK_A))
+	{
+		// move cam left
+		g_pCam->position += -g_pCam->right * g_pCam->moveSpeed;
+		g_pCam->lookDirection += -g_pCam->right * g_pCam->moveSpeed;
+	}
+	if (Keyboard_IsPress(DIK_S))
+	{
+		// move cam backward
+		g_pCam->position += -g_pCam->forward * g_pCam->moveSpeed;
+		g_pCam->lookDirection += -g_pCam->forward * g_pCam->moveSpeed;
+	}
+	if (Keyboard_IsPress(DIK_D))
+	{
+		// move cam right
+		g_pCam->position += g_pCam->right * g_pCam->moveSpeed;
+		g_pCam->lookDirection += g_pCam->right * g_pCam->moveSpeed;
+	}
+	if (Keyboard_IsPress(DIK_Q))
+	{
+		// move cam up
+		g_pCam->position.y += g_pCam->moveSpeed;
+		g_pCam->lookDirection.y += g_pCam->moveSpeed;
+	}
+	if (Keyboard_IsPress(DIK_E))
+	{
+		// move cam down
+		g_pCam->position.y += -g_pCam->moveSpeed;
+		g_pCam->lookDirection.y += -g_pCam->moveSpeed;
+	}
 }
 
 Camera* GetCamera()

@@ -1,4 +1,5 @@
 #include <vector>
+#include "sound.h"
 #include "enemy.h"
 #include "mydirect3d.h"
 #include "transformation.h"
@@ -57,6 +58,9 @@ void UpdateEnemy()
 	// check for input and delete enemies hit by raycast
 	if (!leftMouseClicked && GetAsyncKeyState(VK_LBUTTON) & 0x8000)
 	{
+		// play gun sound
+		PlaySound(SOUND_GUN);
+
 		// left mouse clicked, get index of all enemies hit by ray
 		leftMouseClicked = true;
 		auto hitIndices = RaycastFromMousePos();
@@ -90,7 +94,7 @@ void UpdateEnemy()
 		// enemy reached camera, game over
 		if (D3DXVec3Length(&dir) < 2.0F)
 		{
-			//SetScene(SCENE_RESULTSCREEN);
+			SetScene(SCENE_RESULTSCREEN);
 		}
 	}
 }

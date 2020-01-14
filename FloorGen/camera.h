@@ -8,6 +8,7 @@ class Camera
 {
 public:
 	D3DXVECTOR3 position;								// position of the camera
+	D3DXVECTOR3 lastPosition;
 	D3DXVECTOR3 lookDirection;							// position where camera should be looking
 
 	D3DXVECTOR3 up;										// current up vector
@@ -37,6 +38,7 @@ public:
 		fov = D3DXToRadian(90);
 		moveSpeed = 0.6F;
 		lookSensivity = 1.0F;
+		lastPosition = position;
 	}
 
 	// destructor
