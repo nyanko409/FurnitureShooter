@@ -10,6 +10,7 @@
 #include "enemy.h"
 #include "transformation.h"
 #include "meshLoader.h"
+#include "sound.h"
 #include "font.h"
 
 
@@ -19,6 +20,8 @@ static std::vector<Enemy*> g_enemy;
 
 void InitTitleScreen()
 {
+	PlaySound(SOUND_MAINBGM);
+
 	// init title sprite
 	g_title = Sprite(Texture_GetTexture(TEXTURE_INDEX_TITLE), D3DXVECTOR3(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 0),
 		D3DXVECTOR3(Texture_GetWidth(TEXTURE_INDEX_TITLE) / 2, Texture_GetHeight(TEXTURE_INDEX_TITLE) / 2 ,0),
@@ -92,6 +95,8 @@ void DrawTitleScreen()
 
 void FinalizeTitleScreen()
 {
+	StopSound(SOUND_MAINBGM);
+
 	for (auto enemy : g_enemy)
 	{
 		SAFE_DELETE(enemy);

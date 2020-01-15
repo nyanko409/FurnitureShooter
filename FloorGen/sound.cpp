@@ -42,6 +42,10 @@ float nowvolume;
 SOUNDPARAM g_aParam[SOUND_LABEL_MAX] =
 {
 	{"asset/sound/gun.wav", 0},
+	{"asset/sound/defeat.wav", 0},
+	{"asset/sound/explosion.wav", 0},
+	{"asset/sound/mainbgm.wav", -1},
+	{"asset/sound/gamebgm.wav", -1},
 };
 
 //=============================================================================

@@ -28,7 +28,7 @@ void SpawnEnemyRandomAt(D3DXVECTOR3 position, float radius);
 
 void InitEnemy()
 {
-
+	PlaySound(SOUND_GAMEBGM);
 }
 
 void UninitEnemy()
@@ -37,6 +37,8 @@ void UninitEnemy()
 	{
 		SAFE_DELETE(enemy);
 	}
+
+	StopSound(SOUND_GAMEBGM);
 
 	g_enemy.clear();
 }
@@ -69,6 +71,7 @@ void UpdateEnemy()
 		for (int i = hitIndices.size() - 1; i >= 0; --i)
 		{
 			g_enemy.erase(g_enemy.begin() + hitIndices[i]);
+			PlaySound(SOUND_EXPLOSION);
 			AddScore(10);
 		}  
 	}
@@ -186,5 +189,5 @@ void SpawnEnemyRandomAt(D3DXVECTOR3 position, float radius)
 	D3DXVECTOR3 rot(rand() % 361, rand() % 361 , rand() % 361);
 
 	// spawn random enemy
-	g_enemy.emplace_back(new Enemy(GetRandomMesh(), Transform(pos, rot), 0.1F));
+	g_enemy.emplace_back(new Enemy(GetRandomMesh(), Transform(pos, rot), 0.2F));
 }
